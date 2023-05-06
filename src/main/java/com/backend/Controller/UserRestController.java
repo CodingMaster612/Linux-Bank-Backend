@@ -56,4 +56,29 @@ public class UserRestController {
          return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
      }
  }
+ 
+ 
+ 
+ @RequestMapping(
+	 		value = "/signUp",
+	 		consumes = MediaType.APPLICATION_JSON_VALUE,
+	 		produces = MediaType.APPLICATION_JSON_VALUE,
+	 		method = RequestMethod.POST
+	 		)
+	 // We return a ResponseEntity<Object> because the object returned may vary, could be user, could be an error
+	 // The RequestBody is the information sent to us to process, post and put has request body, get and delete do not
+	 // Request body is encrypted, always send password through a post request
+	 public ResponseEntity<Object> signUp(@RequestBody User user) {
+	 	// Wrap your endpoints in a try catch, if an error happens at any points, you return that error to the client
+	     try {
+	         User signedInUser = userService.save(user);
+	 
+	         // Give proper status codes, OK 200, BadRequest 400, INTERNAL_SERVER_ERROR 500
+	         return new ResponseEntity<>(signedInUser, HttpStatus.OK);
+	     } catch(Exception e) {
+	         return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+	     } catch(Error e) {
+	         return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+	     }
+	 }
 }
